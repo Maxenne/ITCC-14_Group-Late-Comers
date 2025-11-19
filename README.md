@@ -1,4 +1,16 @@
 # ITCC-14_Group-Late-Comers
+
+## 🧑‍💻 Team Members
+
+| Name | GitHub Profile |
+| :--- | :--- |
+| **Arocha, Maxenne** | [Link to GitHub Profile](https://github.com/Maxenne) |
+| **Velasco, Percy Bray** | [Link to GitHub Profile](https://github.com/JakeffXU2023) |
+| **Torregosa, Rolando** | [No Github Link, Email Instead: 20220025104@my.xu.edu.ph] |
+| **Macahia, Ahron Denver** | [Link to GitHub Profile](https://github.com/AhronD) |
+
+---
+
 # Game Release Tracker API
 
 The Game Release Tracker API is a REST service that provides structured access to video game release information.  
