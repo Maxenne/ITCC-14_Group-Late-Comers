@@ -1,0 +1,276 @@
+openapi: 3.0.3
+info:
+  title: Game Release Tracker API
+  description: >
+    This API provides structured access to video game release information.  
+    All data operations are performed against **Firebase Realtime Database**,  
+    with this API acting as a REST wrapper service for validation, filtering,  
+    and business logic.  
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+tags:
+  - name: Games
+    description: Endpoints for game records stored in Firebase
+  - name: Management
+    description: CRUD operations for games
+  - name: Search & Filters
+    description: Search and filtered queries
+
+paths:
+
+  #############################
+  # GET ALL GAMES
+  #############################
+  /games:
+    get:
+      tags:
+        - Games
+      summary: Retrieve all games
+      description: >
+        Fetches all game records from Firebase.  
+        The server retrieves the `/games` collection and returns it as a list.
+      responses:
+        '200':
+          description: List of all games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+
+  #############################
+  # ADD GAME
+  #############################
+  /add:
+    post:
+      tags:
+        - Management
+      summary: Add new game
+      description: >
+        Adds a new game entry using Firebase's auto-generated IDs.  
+        The API validates the request body before storing it in `/games`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewGame'
+      responses:
+        '201':
+          description: Game created successfully
+        '400':
+          description: Invalid data
+
+  #############################
+  # UPDATE GAME
+  #############################
+  /update/{id}:
+    patch:
+      tags:
+        - Management
+      summary: Update an existing game
+      description: >
+        Performs a partial update using Firebase's `update()` functionality.  
+        Only values provided in the body are changed.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Firebase auto-ID of the game
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGame'
+      responses:
+        '200':
+          description: Game updated successfully
+        '404':
+          description: Game not found
+
+  #############################
+  # DELETE GAME
+  #############################
+  /delete/{id}:
+    delete:
+      tags:
+        - Management
+      summary: Delete a game
+      description: >
+        Removes a game record from `/games/{id}` in Firebase.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Firebase document ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deleted successfully
+        '404':
+          description: Game not found
+
+  #############################
+  # SEARCH
+  #############################
+  /search:
+    get:
+      tags:
+        - Search & Filters
+      summary: Search for games
+      description: >
+        Searches games by partial title match.  
+        Filtering is done server-side after retrieving all Firebase data.
+      parameters:
+        - name: title
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Partial or full title to search for
+        - name: platform
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Optional platform filter (e.g., "PC")
+      responses:
+        '200':
+          description: Matching games returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+
+  #############################
+  # RELEASED FILTER
+  #############################
+  /released:
+    get:
+      tags:
+        - Search & Filters
+      summary: Get released games
+      description: >
+        Returns games where `status = released`.  
+        Filtering is applied by the API, not Firebase rules.
+      responses:
+        '200':
+          description: List of released games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+
+  #############################
+  # UPCOMING FILTER
+  #############################
+  /upcoming:
+    get:
+      tags:
+        - Search & Filters
+      summary: Get upcoming games
+      description: >
+        Returns games where `status = upcoming`.  
+      responses:
+        '200':
+          description: List of upcoming games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+
+components:
+
+  schemas:
+
+    ##################################
+    # FULL GAME MODEL (as stored in Firebase)
+    ##################################
+    Game:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        developer:
+          type: string
+        publisher:
+          type: string
+        platform:
+          type: array
+          items:
+            type: string
+        releaseDate:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [released, upcoming, delayed, cancelled]
+
+    ##################################
+    # NEW GAME BODY
+    ##################################
+    NewGame:
+      type: object
+      required:
+        - title
+        - developer
+        - platform
+        - releaseDate
+        - status
+      properties:
+        title:
+          type: string
+        developer:
+          type: string
+        publisher:
+          type: string
+        platform:
+          type: array
+          items:
+            type: string
+        releaseDate:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [released, upcoming, delayed, cancelled]
+
+    ##################################
+    # UPDATE GAME BODY (PARTIAL)
+    ##################################
+    UpdateGame:
+      type: object
+      description: Any field can be updated.
+      properties:
+        title:
+          type: string
+        developer:
+          type: string
+        publisher:
+          type: string
+        platform:
+          type: array
+          items:
+            type: string
+        releaseDate:
+          type: string
+        status:
+          type: string
+          enum: [released, upcoming, delayed, cancelled]
