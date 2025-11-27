@@ -80,6 +80,9 @@ Each game entry stored in Firebase follows:
   "releaseDate": "2026-01-30",
   "status": "upcoming"
 }
+```
+
+---
 
 🧱 Why Use Firebase?
 
@@ -106,6 +109,8 @@ Ensuring clean REST conventions
 Handling filtering, sorting, and searching
 
 The result is a lightweight, scalable system.
+
+---
 
 🧪 Compatible Tools
 
@@ -137,6 +142,7 @@ Cloud Functions for delayed releases
 
 Webhooks for game status changes
 
+---
 
 🗺️ Project Milestones
 
@@ -182,6 +188,8 @@ Add validation for POST /add (already partly done in server.js)
 
 Document the existing endpoints
 
+---
+
 💻 Milestone 2 — Full Game CRUD + Search Feature
 
 Goal: Expand the API so we can fully manage games (Create, Read, Update, Delete) and improve searching.
@@ -221,6 +229,8 @@ Add backend search filtering
 Improve /games?q= so it becomes a real search
 
 Test functionality with the demo UI
+
+---
 
 🔒 Milestone 3 — User Accounts, Login System & Admin Permissions
 
@@ -264,6 +274,7 @@ Update index.html to show “Add Game” only when logged in as admin
 
 Test all restricted routes
 
+---
 
 🧪 Milestone 4 — Search UI, Testing & Final Cleanup
 
